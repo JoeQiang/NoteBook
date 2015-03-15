@@ -42,7 +42,6 @@ public class FrmMain extends Thread {
 	BufferedReader in;
 	PrintWriter out;
 	String nickname;
-	String password;
 
 	JButton b1, b2, b3;
 	ImageIcon img1, img2, img3;
@@ -55,9 +54,8 @@ public class FrmMain extends Thread {
 	public FrmMain() {
 	}
 
-	public FrmMain(String uname, String password,String nickname, String ipad) {
+	public FrmMain(String nickname, String ipad) {
 		this.nickname = nickname;
-		this.password = password;
 		if (ipad != null)
 			ip = ipad;
 		try {
@@ -95,12 +93,13 @@ public class FrmMain extends Thread {
 		pdown.add(jtf);
 		pRight = new JPanel(null);
 		splitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jsp, pdown);
-		splitPaneV.setDividerLocation(320);
+		splitPaneV.setDividerLocation(280);
 		splitpaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPaneV, pRight);
 		splitpaneH.setDividerLocation(350);
-		img1 = new ImageIcon("E:\\eclipse\\workspace\\notebook\\src\\pics\\1.png");
-		img2 = new ImageIcon("E:\\eclipse\\workspace\\notebook\\src\\pics\\2.png");
-		img3 = new ImageIcon("E:\\eclipse\\workspace\\notebook\\src\\pics\\3.png");
+		String pathRoot=System.getProperty("user.dir");
+		img1 = new ImageIcon(pathRoot+"\\src\\pics\\1.png");
+		img2 = new ImageIcon(pathRoot+"\\src\\pics\\2.png");
+		img3 = new ImageIcon(pathRoot+"\\src\\pics\\3.png");
 		b1 = new JButton(img1);
 		b2 = new JButton(img2);
 		b3 = new JButton(img3);

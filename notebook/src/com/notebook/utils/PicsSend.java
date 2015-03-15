@@ -6,11 +6,13 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 
 public class PicsSend {
-	static ImageIcon img1 = new ImageIcon("E:\\eclipse\\workspace\\notebook\\src\\pics\\1.png");
-	static ImageIcon img2 = new ImageIcon("E:\\eclipse\\workspace\\notebook\\src\\pics\\2.png");
-	static ImageIcon img3 = new ImageIcon("E:\\eclipse\\workspace\\notebook\\src\\pics\\3.png");
+	static ImageIcon img1,img2,img3;
 	
 	public static void picSend(JTextPane jta,String txt,String from) throws BadLocationException{
+		String pathRoot=System.getProperty("user.dir");
+		img1 = new ImageIcon(pathRoot+"\\src\\pics\\1.png");
+		img2 = new ImageIcon(pathRoot+"\\src\\pics\\2.png");
+		img3 = new ImageIcon(pathRoot+"\\src\\pics\\3.png");
 		StyledDocument doc = jta.getStyledDocument();
 		if(txt.contains("#1;")&&!(txt.equals("#1;"))){
 			String[] s=txt.split("#1;");

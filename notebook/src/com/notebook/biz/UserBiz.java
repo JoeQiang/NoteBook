@@ -1,9 +1,14 @@
 package com.notebook.biz;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.notebook.dao.UserDao;
 import com.notebook.pojo.User;
+import com.notebook.utils.DbUtil;
 
 public class UserBiz{
 	UserDao dao = new UserDao();
@@ -61,5 +66,25 @@ public class UserBiz{
 	public String getNickName(String name){
 		return dao.findByNickName(name).getNickname();
 	}
-
+	public String getNickNameByUserID(int userID){
+		String nickName="";
+		String querySql="select nickname from t_user where id=?";	
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try{
+			conn=DbUtil.getCon();
+			ps=conn.prepareStatement(querySql);
+			ps.setInt(1, userID);
+			rs=ps.executeQuery();
+			while(rs.next()){
+				nickName=rs.getString("nickname");
+			}			
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				DbUtil.close(rs, ps, conn);
+			}
+		return nickName;
+	}
 }

@@ -316,6 +316,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 			} else if (label.equals("联系同学")) {
 				if (e.getActionCommand().equals("聊天")) {
 					ClientSelector cs = new ClientSelector();
+					cs.userID=userID;
 					cs.setLocation(500, 250);
 					cs.setVisible(true);
 				}
@@ -432,7 +433,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 							tree.startEditingAtPath(tree.getSelectionPath());
 							
 							tree.setInvokesStopCellEditing(true);
-							tree.getCellEditor().addCellEditorListener(new CellEditorAction());
+//							tree.getCellEditor().addCellEditorListener(new CellEditorAction());
 //							查询数据库结果并且赋值给JTextArea
 							currentDiaryID=((DetialNode) node).getCurrentDiaryID();
 							String jtaContent=diaryDao.getDiaryById(currentDiaryID).getContent();
@@ -457,16 +458,16 @@ public class DiaryFrame extends JFrame implements ActionListener {
 
 	}
 //	标题命名监听类
-	private class CellEditorAction implements CellEditorListener{
-        public void editingCanceled(ChangeEvent e) {
-            System.out.println("==========编辑取消");
-        }
-        public void editingStopped(ChangeEvent e) {
-        	DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-        	System.out.println("完成编辑的节点名："+node.toString());
-            System.out.println("=======编辑结束");
-        }
-    }
+//	private class CellEditorAction implements CellEditorListener{
+//        public void editingCanceled(ChangeEvent e) {
+//            System.out.println("==========编辑取消");
+//        }
+//        public void editingStopped(ChangeEvent e) {
+//        	DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+//        	System.out.println("完成编辑的节点名："+node.toString());
+//            System.out.println("=======编辑结束");
+//        }
+//    }
 //格式设置类
 	class MyFont extends JFrame {
 		private static final long serialVersionUID = 1L;
