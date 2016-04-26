@@ -13,9 +13,9 @@ public final class JdbcUtils {
      
     //连接数据库的参数
     private static String url = null;
-//    private static String user = null;
+    private static String user = null;
     private static String driver = null;
-//    private static String password = null;
+    private static String password = null;
      
     private JdbcUtils () {
  
@@ -46,11 +46,16 @@ public final class JdbcUtils {
             InputStream is = JdbcUtils.class.getClassLoader().getResourceAsStream("dbInfo.properties");
             prop.load(is);
             url = prop.getProperty("url");
-//            user = prop.getProperty("user");
-//            driver = prop.getProperty("driver");
-//            password = prop.getProperty("password");
+            user = prop.getProperty("user");
+            driver = prop.getProperty("driver");
+            password = prop.getProperty("password");
              
-//            Class.forName(driver);
+            try {
+				Class.forName(driver);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
              
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,7 +64,7 @@ public final class JdbcUtils {
      
     //该方法获得连接
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url);
+        return DriverManager.getConnection(url,user,password);
     }
      
     //释放资源

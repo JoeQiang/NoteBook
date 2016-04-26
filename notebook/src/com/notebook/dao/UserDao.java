@@ -1,8 +1,13 @@
 package com.notebook.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
+import com.notebook.pojo.DiaryDomain;
 import com.notebook.pojo.User;
+import com.notebook.utils.DbUtil;
 
 public class UserDao extends BaseDao {
 	
@@ -15,7 +20,27 @@ public class UserDao extends BaseDao {
 		String sql = "select * from t_user where nickname = ? or name=?";
 		return (User) super.findOne(sql, nickname,name);
 	}
-	
+	public int findByName(String name) {
+		int userID=0;
+		String querySql="select id from t_user where name=?";		
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try{
+			conn=DbUtil.getCon();
+			ps=conn.prepareStatement(querySql);
+			ps.setString(1, name);
+			rs=ps.executeQuery();
+			while(rs.next()){
+				userID=rs.getInt(rs.getInt("id"));
+			}			
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				DbUtil.close(rs, ps, conn);
+			}
+		return userID;
+	}
 	public User findByNickName(String name){
 		String sql = "select * from t_user where name = ? ";
 		return (User) super.findOne(sql, name);

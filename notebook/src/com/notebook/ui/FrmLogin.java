@@ -2,6 +2,7 @@ package com.notebook.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,7 +13,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.notebook.biz.UserBiz;
+import com.notebook.dao.DiaryDao;
 import com.notebook.dao.UserDao;
+import com.notebook.pojo.DiaryDomain;
 
 public class FrmLogin extends JFrame implements ActionListener {
 	private JPanel p;
@@ -82,8 +85,22 @@ public class FrmLogin extends JFrame implements ActionListener {
 			boolean login = biz.login(username, userpwd);
 			if (login) {
 				this.setVisible(false);
+				System.out.println("登录成功");
+				UserDao userDao=new UserDao();
+				DiaryDao diaryDao=new DiaryDao();
+				ArrayList<DiaryDomain> diarys=new ArrayList<DiaryDomain>();
+				diarys=(ArrayList<DiaryDomain>) diaryDao.getDiarys(userDao.findByName(username));
+//				测试输出
+				for(int i=0;i<diarys.size();i++){
+					System.out.println(diarys.get(i).getContent());
+				}
+//				展示笔记主界面
+				DiaryFrame df = new DiaryFrame();
+				df.userID=userDao.findByName(username);
+				df.launchFrame();
+//				展示聊天界面
 				FrmMain frmMain = new FrmMain();
-				frmMain.frame.setVisible(true);
+//				frmMain.frame.setVisible(true);
 			} else {
 				JOptionPane.showMessageDialog(btnOk, "错误的用户名或密码", "提示", JOptionPane.WARNING_MESSAGE);
 			}

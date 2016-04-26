@@ -1,3 +1,6 @@
+#Tue Apr 26 23:23:34 CST 2016
 eclipse.preferences.version=1
 encoding//src/com/notebook/dao/BaseDao.java=UTF-8
 encoding//src/com/notebook/utils/JdbcUtils.java=UTF-8
+encoding//src/com/notebook/utils/PropertiesUtil.java=GB2312
+encoding/<project>=GB2312

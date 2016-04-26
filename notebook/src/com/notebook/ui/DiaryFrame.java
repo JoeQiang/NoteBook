@@ -39,11 +39,12 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.notebook.dao.DiaryDao;
 import com.notebook.utils.FileIO;
 
 public class DiaryFrame extends JFrame {
 	public static String SRC_PICS_DONGWU_JPG = "./src/pics/dongwu.jpg";
-
+	public static int userID;
 	public DiaryFrame() {
 	}
 
@@ -51,9 +52,8 @@ public class DiaryFrame extends JFrame {
 	static DefaultMutableTreeNode root = new DefaultMutableTreeNode("我的笔记");
 	static ArrayList<DefaultMutableTreeNode> nodes = new ArrayList<DefaultMutableTreeNode>();
 	List<String> newCreateNodesContent = new ArrayList<String>();;
-
-	final String PATH = "E:\\eclipse\\workspace\\notebook\\src\\data.txt";
-	List<String> nodesContents = FileIO.readTxtFile(PATH);
+	
+	final String PATH = "E:\\MyEclipseWorkspace\\nobe\\NoteBook\\notebook\\src\\data.txt";
 	JTextArea jta = new JTextArea(){
 		ImageIcon imageIcon = new ImageIcon(SRC_PICS_DONGWU_JPG);
 		{
@@ -73,8 +73,12 @@ public class DiaryFrame extends JFrame {
 	JButton bSave, bDel;
 	Diary diary = null;
 	private JScrollPane jsp2;
-
 	public void launchFrame() {
+//		获取科目名称
+//		更改数据库获取科目数据
+		DiaryDao diaryDao=new DiaryDao();
+		List<String> nodesContents=diaryDao.getItemByUserID(userID);
+//		List<String> nodesContents = FileIO.readTxtFile(PATH);
 		int WIDTH = 640, HEIGHT = 480;
 		setTitle("课堂笔记本");
 		setSize(WIDTH, HEIGHT);
@@ -138,7 +142,7 @@ public class DiaryFrame extends JFrame {
 		bottom.add(bDel);
 		jp.add(bottom, BorderLayout.SOUTH);
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, jp);
-
+//		赋值节点
 		Iterator<String> it = nodesContents.iterator();
 		while (it.hasNext()) {
 			DefaultMutableTreeNode node = new Diary(it.next());
@@ -303,7 +307,6 @@ public class DiaryFrame extends JFrame {
 				e.printStackTrace();
 			}
 		}
-
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
 			jta.setText("");
@@ -343,10 +346,5 @@ public class DiaryFrame extends JFrame {
 
 		}
 
-	}
-	
-	public static void main(String[] args) {
-		DiaryFrame df = new DiaryFrame();
-		df.launchFrame();
 	}
 }
