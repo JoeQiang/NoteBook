@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +41,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.notebook.dao.DiaryDao;
+import com.notebook.pojo.DiaryDomain;
 import com.notebook.utils.FileIO;
 
 public class DiaryFrame extends JFrame {
@@ -245,27 +247,40 @@ public class DiaryFrame extends JFrame {
 				String str = node.toString();
 				if (node.isLeaf()) {
 					BufferedWriter out = null;
+					DiaryDomain diary=new DiaryDomain();
+					diary.setItem(node.getParent().getParent().toString());
+					diary.setDate(str+node.getParent().toString());
+					diary.setContent(jta.getText());
+					DiaryDao diaryDao=new DiaryDao();
 					try {
-						String fileName = node.getParent().getParent().toString() + node.getParent().toString() + str
-								+ ".txt";
-						File file = new File(fileName);
-						out = new BufferedWriter(new FileWriter(file));
-						out.write(jta.getText(), 0, (jta.getText()).length());
-						out.flush();
+						diaryDao.addDiary(diary);
 						new JOptionPane().showMessageDialog(df, "笔记创建成功！");
-					} catch (IOException err) {
+					} catch (SQLException e1) {
 						new JOptionPane().showMessageDialog(df, "笔记创建失败！");
-						err.printStackTrace();
-					} catch (Exception err) {
-						err.printStackTrace();
-					} finally {
-						try {
-							if (out != null)
-								out.close();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+						e1.printStackTrace();
 					}
+					
+//					try {
+//						String fileName = node.getParent().getParent().toString() + node.getParent().toString() + str
+//								+ ".txt";
+//						File file = new File(fileName);
+//						out = new BufferedWriter(new FileWriter(file));
+//						out.write(jta.getText(), 0, (jta.getText()).length());
+//						out.flush();
+//						new JOptionPane().showMessageDialog(df, "笔记创建成功！");
+//					} catch (IOException err) {
+//						new JOptionPane().showMessageDialog(df, "笔记创建失败！");
+//						err.printStackTrace();
+//					} catch (Exception err) {
+//						err.printStackTrace();
+//					} finally {
+//						try {
+//							if (out != null)
+//								out.close();
+//						} catch (IOException e1) {
+//							e1.printStackTrace();
+//						}
+//					}
 				}
 			} else if (e.getSource() == bDel) {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();

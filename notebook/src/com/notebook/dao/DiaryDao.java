@@ -3,6 +3,7 @@ package com.notebook.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.notebook.pojo.DiaryDomain;
@@ -58,5 +59,25 @@ public class DiaryDao{
 				DbUtil.close(rs, ps, conn);
 			}
 		return items;
+	}
+	public void addDiary(DiaryDomain diary) throws SQLException{
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		conn=null;
+		StringBuffer sql= new StringBuffer("insert into diary(item,date,detial,userID) values(?,?,?,?)");
+		try{
+			conn = DbUtil.getCon();
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setString(1, diary.getItem());
+			pstmt.setString(2, diary.getDate());
+			pstmt.setString(3, diary.getContent());
+			pstmt.setInt(4, diary.getUserID());
+			pstmt.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}finally{
+			pstmt.close();
+			conn.close();
+		}
 	}
 }
