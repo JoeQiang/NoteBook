@@ -5,12 +5,17 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+
+import org.jvnet.substance.SubstanceLookAndFeel;
+import org.jvnet.substance.theme.SubstanceTerracottaTheme;
 
 import com.notebook.biz.UserBiz;
 import com.notebook.dao.DiaryDao;
@@ -122,6 +127,20 @@ public class FrmLogin extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
+		try {
+            UIManager.setLookAndFeel(new SubstanceLookAndFeel());
+            JFrame.setDefaultLookAndFeelDecorated(true);
+            JDialog.setDefaultLookAndFeelDecorated(true);
+            SubstanceLookAndFeel.setCurrentTheme(new SubstanceTerracottaTheme());
+//          SubstanceLookAndFeel.setSkin(new EmeraldDuskSkin());
+//          SubstanceLookAndFeel.setCurrentButtonShaper(new ClassicButtonShaper());
+//          SubstanceLookAndFeel.setCurrentWatermark(new SubstanceBubblesWatermark());
+//          SubstanceLookAndFeel.setCurrentBorderPainter(new StandardBorderPainter());
+//            SubstanceLookAndFeel.setCurrentGradientPainter(new StandardGradientPainter());
+//            SubstanceLookAndFeel.setCurrentTitlePainter(new FlatTitePainter());
+        } catch (Exception e) {
+            System.err.println("Something went wrong!");
+        }
 		FrmLogin frmLogin = new FrmLogin("ÓÃ»§µÇÂ¼");
 		frmLogin.setVisible(true);
 	}
