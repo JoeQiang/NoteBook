@@ -5,23 +5,27 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+
+import org.jvnet.substance.SubstanceLookAndFeel;
+import org.jvnet.substance.border.StandardBorderPainter;
+import org.jvnet.substance.button.ClassicButtonShaper;
+import org.jvnet.substance.painter.StandardGradientPainter;
+import org.jvnet.substance.skin.EmeraldDuskSkin;
+import org.jvnet.substance.theme.SubstanceTerracottaTheme;
+
 import com.notebook.biz.UserBiz;
 import com.notebook.dao.DiaryDao;
 import com.notebook.dao.UserDao;
 import com.notebook.pojo.DiaryDomain;
 
-/**
- * 登录主界面
- * 
- * @author Joe_Huang
- * 
- */
 public class FrmLogin extends JFrame implements ActionListener {
 	private JPanel p;
 	private JLabel lblName, lblPwd;
@@ -109,6 +113,7 @@ public class FrmLogin extends JFrame implements ActionListener {
 				df.launchFrame();
 				// 展示聊天界面
 				FrmMain frmMain = new FrmMain();
+				// frmMain.frame.setVisible(true);
 			} else {
 				JOptionPane.showMessageDialog(btnOk, "错误的用户名或密码", "提示",
 						JOptionPane.WARNING_MESSAGE);
@@ -132,6 +137,7 @@ public class FrmLogin extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
+		// 皮肤包
 		// try {
 		// UIManager.setLookAndFeel(new SubstanceLookAndFeel());
 		// JFrame.setDefaultLookAndFeelDecorated(true);
