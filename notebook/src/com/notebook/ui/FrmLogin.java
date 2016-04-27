@@ -133,6 +133,7 @@ public class FrmLogin extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
+//		Æ¤·ô°ü
 //		try {
 //            UIManager.setLookAndFeel(new SubstanceLookAndFeel());
 //            JFrame.setDefaultLookAndFeelDecorated(true);

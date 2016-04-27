@@ -9,10 +9,13 @@ import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.MenuShortcut;
+import java.awt.Panel;
 import java.awt.PopupMenu;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -27,15 +30,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -56,21 +65,10 @@ public class DiaryFrame extends JFrame {
 	List<String> newCreateNodesContent = new ArrayList<String>();;
 	
 	final String PATH = "E:\\MyEclipseWorkspace\\nobe\\NoteBook\\notebook\\src\\data.txt";
-	JTextArea jta = new JTextArea(){
-		ImageIcon imageIcon = new ImageIcon(SRC_PICS_DONGWU_JPG);
-		{
-			setOpaque(false);
-		}
-
-		public void paint(Graphics g) {
-			g.drawImage(imageIcon.getImage(), 0, 0, this);
-			super.paint(g);
-		}
-	};
-	
+	JTextArea jta = new JTextArea();
 	MenuBar menu = null;
-	Menu m1, m2, m3;
-	MenuItem m1a, m1b, m1c,m1d,m1e, m2a, m2b, m2c, m2d,m3a;
+	Menu m1, m2, m3,m4;
+	MenuItem m1a, m1b, m1c,m1d,m1e, m2a, m2b, m2c, m2d,m3a,m4a;
 	PopupMenu pMenu = null;
 	JButton bSave, bDel;
 	Diary diary = null;
@@ -86,11 +84,14 @@ public class DiaryFrame extends JFrame {
 		setSize(WIDTH, HEIGHT);
 		setLocation(400, 180);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+        jta.setBackground(Color.DARK_GRAY);
 		jta.setSize(20, 30);
 		menu = new MenuBar();
 		pMenu = new PopupMenu();
 		m1 = new Menu("笔记管理");
 		m2 = new Menu("字体大小");
+		m4=new Menu("格式设置");
 		m3 = new Menu("联系同学");
 
 		m1a = new MenuItem("新建笔记");
@@ -130,9 +131,10 @@ public class DiaryFrame extends JFrame {
 
 		m3a = new MenuItem("聊天");
 		m3.add(m3a);
-		menu.add(m3);
-
-		
+		m4a = new MenuItem("颜色格式");
+		m4.add(m4a);
+		menu.add(m4);
+		menu.add(m3);		
 
 		this.setMenuBar(menu);
 		tree = new JTree(root);
@@ -165,6 +167,7 @@ public class DiaryFrame extends JFrame {
 		m1.addActionListener(menuListener);
 		m2.addActionListener(menuListener);
 		m3.addActionListener(menuListener);
+		m4.addActionListener(menuListener);
 
 		this.getContentPane().add(splitPane);
 		this.setVisible(true);
@@ -189,6 +192,12 @@ public class DiaryFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String label = ((MenuItem) e.getSource()).getLabel();
+			if(label.equals("格式设置")){
+				if (e.getActionCommand().equals("颜色格式")) {
+					MyFont myview = new MyFont();
+			        myview.setVisible(true);
+				}
+			}
 			if (label.equals("笔记管理")) {
 				if (e.getActionCommand().equals("新建笔记")) {
 					String value = new JOptionPane().showInputDialog(df, "请输入新建笔记名称！");
@@ -369,5 +378,198 @@ public class DiaryFrame extends JFrame {
 
 		}
 
+	}
+	class MyFont extends JFrame{
+		private static final long serialVersionUID = 1L;
+	    private JPanel contentPane;
+	    private JLabel lb1=new JLabel("字体颜色设置");
+	    private String myFontName;
+	    private int myFontSize=15;
+	    private int myFontType =0;
+	    private int myFontColor;
+	     
+	    private Font f=null ;
+	    /**
+	     * Create the frame.
+	     */
+	    public MyFont() {
+	         
+	        init();//初始化界面
+	    }
+	     
+	    public void init(){
+	    	lb1.setBounds(20, 20, 80, 30);
+	        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+	        setBounds(300, 100, 558, 300);
+	        contentPane = new JPanel();
+	        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+	        setContentPane(contentPane);
+	        contentPane.setLayout(null);
+	                 
+	        JPanel Color = new JPanel();
+	        Color.setBounds(10, 10, 215, 46);
+	        contentPane.add(Color);
+	        Color.setLayout(null);
+	         
+	        /**
+	         * 字体颜色监听
+	         */
+	        final JRadioButton rdbtnRed = new JRadioButton("红");
+	 
+	        rdbtnRed.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {               
+	                if(e.getSource()==rdbtnRed){
+	                    myFontColor = 1;
+	                    change(myFontColor,f);
+	                }          
+	            }
+	        });
+	     
+	        rdbtnRed.setBounds(5, 5, 61, 23);
+	        Color.add(rdbtnRed);
+	         
+	        final JRadioButton rdbtnBlue = new JRadioButton("蓝");
+	        rdbtnBlue.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                 
+	                if(e.getSource()==rdbtnBlue){
+	                    myFontColor = 2;
+	                    change(myFontColor,f);
+	                }
+	            }
+	        });
+	        rdbtnBlue.setBounds(68, 5, 68, 23);
+	        Color.add(rdbtnBlue);
+	         
+	        final JRadioButton rdbtnGray = new JRadioButton("亮灰");
+	 
+	        rdbtnGray.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                 
+	                if(e.getSource()==rdbtnGray){
+	                    myFontColor =3;
+	                    change(myFontColor,f);
+	                    //txtrJanuaryBy.setFont(f);
+	                }
+	            }
+	        });
+	        rdbtnGray.setBounds(138, 5, 71, 23);
+	        Color.add(rdbtnGray);
+	         
+	         
+	        ButtonGroup buttongroup = new ButtonGroup();
+	        buttongroup.add(rdbtnGray);
+	        buttongroup.add(rdbtnBlue);
+	        buttongroup.add(rdbtnRed);
+	        jta.setLineWrap(true);
+	        jta.setWrapStyleWord(true);
+	         
+	        JPanel panel = new JPanel();
+	        panel.setBounds(235, 10, 151, 46);
+	        contentPane.add(panel);
+	        panel.setLayout(null);
+	        /**
+	         * 字体形状监听
+	         */
+	        JCheckBox chckbxMy = new JCheckBox("Italic");
+	        chckbxMy.setFont(new Font("宋体", Font.ITALIC, 12));
+	        chckbxMy.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                 f= new Font(myFontName,2,myFontSize);
+	                 change(myFontColor,f);
+	            }
+	        });
+	        chckbxMy.setBounds(69, 6, 61, 23);
+	        panel.add(chckbxMy);
+	         
+	        final JCheckBox checkBox_1 = new JCheckBox("Bold");
+	        checkBox_1.setFont(new Font("宋体", Font.BOLD, 12));
+	        checkBox_1.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                 f= new Font(myFontName,1 ,myFontSize);
+	                 change(myFontColor,f);
+	            }
+	        });
+	        checkBox_1.setBounds(6, 6, 61, 23);
+	        panel.add(checkBox_1);
+	         
+	        String[] myFont = {"宋体","微软雅黑","Arial"};
+	        @SuppressWarnings({ "rawtypes", "unchecked" })
+	        final JComboBox comboBox = new JComboBox(myFont);
+	        /**
+	         * 字体监听
+	         */
+	        comboBox.addItemListener(new ItemListener() {
+	            public void itemStateChanged(ItemEvent e) {
+	                 myFontName = comboBox.getSelectedItem().toString();
+	                 f= new Font(myFontName,myFontType ,myFontSize);
+	                 change(myFontColor,f);
+	            }
+	        });
+	        comboBox.setBounds(399, 20, 73, 21);
+	        contentPane.add(comboBox);
+	        /**
+	         * 字体大小监听
+	         */
+	        String[] mySize ={"10","20","30"};
+	        @SuppressWarnings({ "rawtypes", "unchecked" })
+	        final JComboBox comboBox_1 = new JComboBox(mySize);
+	        comboBox_1.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                 
+	                 myFontSize =Integer.parseInt( comboBox_1.getSelectedItem().toString());
+	                 f= new Font(myFontName,myFontType ,myFontSize);
+	                 change(myFontColor,f);
+	                 
+	            }
+	        });
+	 
+	        comboBox_1.setBounds(482, 20, 50, 21);
+	        contentPane.add(comboBox_1);
+	         
+	        JButton btnChangeBackgroupColor = new JButton("改变背景颜色");
+	        btnChangeBackgroupColor.setContentAreaFilled(false);
+	        btnChangeBackgroupColor.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                changeBackGroupColor();
+	            }
+	        });
+	        btnChangeBackgroupColor.setFont(new Font("Consolas", Font.BOLD, 14));
+	        btnChangeBackgroupColor.setBounds(10, 66, 215, 23);
+	        contentPane.add(btnChangeBackgroupColor);
+	 
+	    }
+	     
+	    /**
+	     * change TODO 改变字体 
+	     * @param colorType
+	     * @param myFont void
+	     */
+	     
+	    public void change(int colorType, Font myFont){       
+	         
+	    	jta.setFont(myFont);
+	         
+	        if(colorType==1){
+	        	jta.setForeground(Color.red);
+	        }else if(colorType==2){
+	        	jta.setForeground(Color.blue);
+	        }else{
+	        	jta.setForeground(Color.gray);
+	        }
+	    }
+	     
+	    /**
+	     * changeBackGroupColor TODO 随机产生RGB,改变文本框背景颜色 
+	     *  void
+	     */
+	    public  void changeBackGroupColor(){
+	        //随机产生三基色
+	        int red =(int )(Math.random()*255);
+	        int green =(int )(Math.random()*255);
+	        int black =(int )(Math.random()*255);
+	        Color color = new Color(red,green,black);
+	        jta.setBackground(color);
+	    }
 	}
 }
