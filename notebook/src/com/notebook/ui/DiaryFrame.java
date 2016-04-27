@@ -1,16 +1,13 @@
 package com.notebook.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.MenuShortcut;
 import java.awt.PopupMenu;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -25,8 +22,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,9 +39,11 @@ import com.notebook.dao.DiaryDao;
 import com.notebook.pojo.DiaryDomain;
 import com.notebook.utils.FileIO;
 
+@SuppressWarnings("serial")
 public class DiaryFrame extends JFrame {
 	public static String SRC_PICS_DONGWU_JPG = "./src/pics/dongwu.jpg";
 	public static int userID;
+
 	public DiaryFrame() {
 	}
 
@@ -54,9 +51,9 @@ public class DiaryFrame extends JFrame {
 	static DefaultMutableTreeNode root = new DefaultMutableTreeNode("我的笔记");
 	static ArrayList<DefaultMutableTreeNode> nodes = new ArrayList<DefaultMutableTreeNode>();
 	List<String> newCreateNodesContent = new ArrayList<String>();;
-	
+
 	final String PATH = "E:\\MyEclipseWorkspace\\nobe\\NoteBook\\notebook\\src\\data.txt";
-	JTextArea jta = new JTextArea(){
+	JTextArea jta = new JTextArea() {
 		ImageIcon imageIcon = new ImageIcon(SRC_PICS_DONGWU_JPG);
 		{
 			setOpaque(false);
@@ -67,20 +64,26 @@ public class DiaryFrame extends JFrame {
 			super.paint(g);
 		}
 	};
-	
+
 	MenuBar menu = null;
 	Menu m1, m2, m3;
-	MenuItem m1a, m1b, m1c,m1d,m1e, m2a, m2b, m2c, m2d,m3a;
+	MenuItem m1a, m1b, m1c, m1d, m1e, m2a, m2b, m2c, m2d, m3a;
+	// 个人信息菜单
+	Menu infoMenu;
+	// 个人信息详情
+	MenuItem infoItem;
+
 	PopupMenu pMenu = null;
 	JButton bSave, bDel;
 	Diary diary = null;
 	private JScrollPane jsp2;
+
 	public void launchFrame() {
-//		获取科目名称
-//		更改数据库获取科目数据
-		DiaryDao diaryDao=new DiaryDao();
-		List<String> nodesContents=diaryDao.getItemByUserID(userID);
-//		List<String> nodesContents = FileIO.readTxtFile(PATH);
+		// 获取科目名称
+		// 更改数据库获取科目数据
+		DiaryDao diaryDao = new DiaryDao();
+		List<String> nodesContents = diaryDao.getItemByUserID(userID);
+		// List<String> nodesContents = FileIO.readTxtFile(PATH);
 		int WIDTH = 640, HEIGHT = 480;
 		setTitle("课堂笔记本");
 		setSize(WIDTH, HEIGHT);
@@ -92,6 +95,10 @@ public class DiaryFrame extends JFrame {
 		m1 = new Menu("笔记管理");
 		m2 = new Menu("字体大小");
 		m3 = new Menu("联系同学");
+
+		// 初始化infoMenu
+		infoMenu = new Menu("个人信息");
+		infoItem = new MenuItem("修改个人信息");
 
 		m1a = new MenuItem("新建笔记");
 		m1a.setShortcut(new MenuShortcut(KeyEvent.VK_N));
@@ -132,8 +139,6 @@ public class DiaryFrame extends JFrame {
 		m3.add(m3a);
 		menu.add(m3);
 
-		
-
 		this.setMenuBar(menu);
 		tree = new JTree(root);
 		JScrollPane jsp1 = new JScrollPane(tree);
@@ -147,8 +152,9 @@ public class DiaryFrame extends JFrame {
 		bottom.add(bSave);
 		bottom.add(bDel);
 		jp.add(bottom, BorderLayout.SOUTH);
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jsp1, jp);
-//		赋值节点
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				jsp1, jp);
+		// 赋值节点
 		Iterator<String> it = nodesContents.iterator();
 		while (it.hasNext()) {
 			DefaultMutableTreeNode node = new Diary(it.next());
@@ -191,13 +197,13 @@ public class DiaryFrame extends JFrame {
 			String label = ((MenuItem) e.getSource()).getLabel();
 			if (label.equals("笔记管理")) {
 				if (e.getActionCommand().equals("新建笔记")) {
-					String value = new JOptionPane().showInputDialog(df, "请输入新建笔记名称！");
+					String value = new JOptionPane().showInputDialog(df,
+							"请输入新建笔记名称！");
 					DefaultMutableTreeNode node = new Diary(value);
 					nodes.add(node);
 					newCreateNodesContent.add(value);
 					DiaryFrame.initTree();
-				}
-				else if (e.getActionCommand().equals("保存笔记")) {
+				} else if (e.getActionCommand().equals("保存笔记")) {
 					for (int i = 0; i < newCreateNodesContent.size(); i++) {
 						try {
 							FileIO.save(PATH, newCreateNodesContent.get(i));
@@ -205,18 +211,16 @@ public class DiaryFrame extends JFrame {
 							e1.printStackTrace();
 						}
 					}
-				}
-				else if (e.getActionCommand().equals("查询笔记")) {
-					QueryDiary ad=new QueryDiary();
-					ad.userID=userID;
+				} else if (e.getActionCommand().equals("查询笔记")) {
+					QueryDiary ad = new QueryDiary();
+					ad.userID = userID;
 					ad.setVisible(true);
-				}
-				else if (e.getActionCommand().equals("清空笔记")) {
-						try {
-							FileIO.save_2(PATH,"");
+				} else if (e.getActionCommand().equals("清空笔记")) {
+					try {
+						FileIO.save_2(PATH, "");
 					} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+						e1.printStackTrace();
+					}
 				}
 
 				else if (e.getActionCommand().equals("退出系统")) {
@@ -228,17 +232,17 @@ public class DiaryFrame extends JFrame {
 					cs.setLocation(500, 250);
 					cs.setVisible(true);
 				}
-				
+
 			} else if (label.equals("字体大小")) {
 				if (e.getActionCommand().equals("大")) {
-					jta.setFont(new Font("Serif",1,30));
+					jta.setFont(new Font("Serif", 1, 30));
 				} else if (e.getActionCommand().equals("中")) {
-					jta.setFont(new Font("Serif",1,24));
+					jta.setFont(new Font("Serif", 1, 24));
 				} else if (e.getActionCommand().equals("小")) {
-					jta.setFont(new Font("Serif",1,18));
+					jta.setFont(new Font("Serif", 1, 18));
 				} else if (e.getActionCommand().equals("默认")) {
 					jta.setFont(new Font(null));
-				} 
+				}
 			}
 
 		}
@@ -249,18 +253,18 @@ public class DiaryFrame extends JFrame {
 		DiaryFrame df = new DiaryFrame();
 
 		@Override
-
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == bSave) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+						.getLastSelectedPathComponent();
 				String str = node.toString();
 				if (node.isLeaf()) {
 					BufferedWriter out = null;
-					DiaryDomain diary=new DiaryDomain();
+					DiaryDomain diary = new DiaryDomain();
 					diary.setItem(node.getParent().getParent().toString());
-					diary.setDate(str+node.getParent().toString());
+					diary.setDate(str + node.getParent().toString());
 					diary.setContent(jta.getText());
-					DiaryDao diaryDao=new DiaryDao();
+					DiaryDao diaryDao = new DiaryDao();
 					try {
 						diaryDao.addDiary(diary);
 						new JOptionPane().showMessageDialog(df, "笔记创建成功！");
@@ -268,38 +272,42 @@ public class DiaryFrame extends JFrame {
 						new JOptionPane().showMessageDialog(df, "笔记创建失败！");
 						e1.printStackTrace();
 					}
-//					try {
-//						String fileName = node.getParent().getParent().toString() + node.getParent().toString() + str
-//								+ ".txt";
-//						File file = new File(fileName);
-//						out = new BufferedWriter(new FileWriter(file));
-//						out.write(jta.getText(), 0, (jta.getText()).length());
-//						out.flush();
-//						new JOptionPane().showMessageDialog(df, "笔记创建成功！");
-//					} catch (IOException err) {
-//						new JOptionPane().showMessageDialog(df, "笔记创建失败！");
-//						err.printStackTrace();
-//					} catch (Exception err) {
-//						err.printStackTrace();
-//					} finally {
-//						try {
-//							if (out != null)
-//								out.close();
-//						} catch (IOException e1) {
-//							e1.printStackTrace();
-//						}
-//					}
+					// try {
+					// String fileName = node.getParent().getParent().toString()
+					// + node.getParent().toString() + str
+					// + ".txt";
+					// File file = new File(fileName);
+					// out = new BufferedWriter(new FileWriter(file));
+					// out.write(jta.getText(), 0, (jta.getText()).length());
+					// out.flush();
+					// new JOptionPane().showMessageDialog(df, "笔记创建成功！");
+					// } catch (IOException err) {
+					// new JOptionPane().showMessageDialog(df, "笔记创建失败！");
+					// err.printStackTrace();
+					// } catch (Exception err) {
+					// err.printStackTrace();
+					// } finally {
+					// try {
+					// if (out != null)
+					// out.close();
+					// } catch (IOException e1) {
+					// e1.printStackTrace();
+					// }
+					// }
 				}
 			} else if (e.getSource() == bDel) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+						.getLastSelectedPathComponent();
 				String str = node.toString();
 				if (node.isLeaf()) {
 					BufferedWriter out = null;
 					try {
-						String fileName = node.getParent().getParent().toString() + node.getParent().toString() + str
-								+ ".txt";
+						String fileName = node.getParent().getParent()
+								.toString()
+								+ node.getParent().toString() + str + ".txt";
 						File file = new File(fileName);
-						out = new BufferedWriter(new FileWriter(new File("del.bat")));
+						out = new BufferedWriter(new FileWriter(new File(
+								"del.bat")));
 						String cmd = "del" + file.getAbsolutePath().toString();
 						out.write(cmd);
 						out.newLine();
@@ -330,19 +338,24 @@ public class DiaryFrame extends JFrame {
 				e.printStackTrace();
 			}
 		}
+
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
 			jta.setText("");
 			if (e.getSource() == tree) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+						.getLastSelectedPathComponent();
 				if (node.isLeaf()) {
 					String str = node.toString();
 					for (int i = 1; i <= 12; i++) {
 						if (node.getParent().toString().equals(i + "月")) {
 							BufferedReader br = null;
 							try {
-								String fileName = node.getParent().getParent().toString() + node.getParent().toString()
-										+ str + ".txt";
+								String fileName = node.getParent().getParent()
+										.toString()
+										+ node.getParent().toString()
+										+ str
+										+ ".txt";
 								File file = new File(fileName);
 								br = new BufferedReader(new FileReader(file));
 								String line = null;

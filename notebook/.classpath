@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/sqljdbc4.jar"/>
-	<classpathentry kind="lib" path="E:/MyEclipseWorkspace/mysql-connector-java-3.1.12-bin.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ginger/Desktop/hm/皮肤包/substance.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-5.0.4-bin.jar"/>
+	<classpathentry kind="lib" path="lib/substance.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

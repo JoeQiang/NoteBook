@@ -45,6 +45,8 @@ public class FrmMain extends Thread {
 	String password;
 
 	JButton b1, b2, b3;
+	// 个人信息按钮
+	JButton infoBtn;
 	ImageIcon img1, img2, img3;
 	StyledDocument doc = null;
 	UserBiz biz;
@@ -55,7 +57,7 @@ public class FrmMain extends Thread {
 	public FrmMain() {
 	}
 
-	public FrmMain(String uname, String password,String nickname, String ipad) {
+	public FrmMain(String uname, String password, String nickname, String ipad) {
 		this.nickname = nickname;
 		this.password = password;
 		if (ipad != null)
@@ -71,7 +73,7 @@ public class FrmMain extends Thread {
 		}
 
 		frame = new JFrame("聊天->" + nickname);
-		jta = new JTextPane(){
+		jta = new JTextPane() {
 			ImageIcon imageIcon = new ImageIcon(DiaryFrame.SRC_PICS_DONGWU_JPG);
 			{
 				setOpaque(false);
@@ -96,19 +98,31 @@ public class FrmMain extends Thread {
 		pRight = new JPanel(null);
 		splitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jsp, pdown);
 		splitPaneV.setDividerLocation(320);
-		splitpaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPaneV, pRight);
+		splitpaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPaneV,
+				pRight);
 		splitpaneH.setDividerLocation(350);
-		img1 = new ImageIcon("E:\\eclipse\\workspace\\notebook\\src\\pics\\1.png");
-		img2 = new ImageIcon("E:\\eclipse\\workspace\\notebook\\src\\pics\\2.png");
-		img3 = new ImageIcon("E:\\eclipse\\workspace\\notebook\\src\\pics\\3.png");
+
+		/**
+		 * 图片用相对路径 ， 项目地址为跟路径
+		 */
+		img1 = new ImageIcon(
+				"E:\\eclipse\\workspace\\notebook\\src\\pics\\1.png");
+		img2 = new ImageIcon(
+				"E:\\eclipse\\workspace\\notebook\\src\\pics\\2.png");
+		img3 = new ImageIcon(
+				"E:\\eclipse\\workspace\\notebook\\src\\pics\\3.png");
 		b1 = new JButton(img1);
 		b2 = new JButton(img2);
 		b3 = new JButton(img3);
+		// 初始化修改个人信息按钮
+		infoBtn = new JButton("个人信息");
 
 		pdown.add(b1);
 		pdown.add(b2);
 		pdown.add(b3);
-		
+
+		pdown.add(infoBtn);
+
 		frame.add(splitpaneH);
 		frame.setSize(500, 400);
 		frame.setLocation(300, 300);
@@ -121,11 +135,9 @@ public class FrmMain extends Thread {
 		b2.addActionListener(buttonListener);
 		b3.addActionListener(buttonListener);
 
-
 		jtf.addActionListener(new ActionListenerImpl());
 
 	}
-
 
 	public void run() {
 		try {
@@ -141,7 +153,8 @@ public class FrmMain extends Thread {
 					if (!(this.nickname.equals(user))) {
 						this.jcb.addItem(user);
 					}
-					this.jta.setText(jta.getText() + user + "" + ipadr.nextToken() + "上线了！\n");
+					this.jta.setText(jta.getText() + user + ""
+							+ ipadr.nextToken() + "上线了！\n");
 				}
 				if (type.equals("Del")) {
 					jcb.removeItem(tx);
@@ -205,4 +218,7 @@ public class FrmMain extends Thread {
 		}
 	}
 
+	public static void main(String[] args) {
+		
+	}
 }

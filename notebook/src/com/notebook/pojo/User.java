@@ -53,8 +53,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [ID=" + ID + ", name=" + name + ", nickname=" + nickname + ", password=" + password + "]";
+		return "User [ID=" + ID + ", name=" + name + ", nickname=" + nickname
+				+ ", password=" + password + "]";
 	}
-
 
 }
