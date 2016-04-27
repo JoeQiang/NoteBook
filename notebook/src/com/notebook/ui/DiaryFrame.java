@@ -70,7 +70,7 @@ public class DiaryFrame extends JFrame {
 	
 	MenuBar menu = null;
 	Menu m1, m2, m3;
-	MenuItem m1a, m1b, m1c,m1d, m2a, m2b, m2c, m2d,m3a;
+	MenuItem m1a, m1b, m1c,m1d,m1e, m2a, m2b, m2c, m2d,m3a;
 	PopupMenu pMenu = null;
 	JButton bSave, bDel;
 	Diary diary = null;
@@ -101,9 +101,13 @@ public class DiaryFrame extends JFrame {
 		m1c.setShortcut(new MenuShortcut(KeyEvent.VK_D));
 		m1d = new MenuItem("退出系统");
 		m1d.setShortcut(new MenuShortcut(KeyEvent.VK_Q));
+		m1e = new MenuItem("查询笔记");
+		m1e.setShortcut(new MenuShortcut(KeyEvent.VK_U));
 		m1.add(m1a);
 		m1.addSeparator();
 		m1.add(m1b);
+		m1.addSeparator();
+		m1.add(m1e);
 		m1.addSeparator();
 		m1.add(m1c);
 		m1.addSeparator();
@@ -202,6 +206,11 @@ public class DiaryFrame extends JFrame {
 						}
 					}
 				}
+				else if (e.getActionCommand().equals("查询笔记")) {
+					QueryDiary ad=new QueryDiary();
+					ad.userID=userID;
+					ad.setVisible(true);
+				}
 				else if (e.getActionCommand().equals("清空笔记")) {
 						try {
 							FileIO.save_2(PATH,"");
@@ -259,7 +268,6 @@ public class DiaryFrame extends JFrame {
 						new JOptionPane().showMessageDialog(df, "笔记创建失败！");
 						e1.printStackTrace();
 					}
-					
 //					try {
 //						String fileName = node.getParent().getParent().toString() + node.getParent().toString() + str
 //								+ ".txt";

@@ -1,5 +1,6 @@
 package com.notebook.dao;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -79,5 +80,31 @@ public class DiaryDao{
 			pstmt.close();
 			conn.close();
 		}
+	}
+	public ArrayList<DiaryDomain> getDiarysByArg(String detial,String depend,int userID) {
+		ArrayList<DiaryDomain> diarys=new ArrayList<DiaryDomain>();
+		String querySql="select * from diary where "+depend+" like '%"+detial+"%' and userID="+userID+";";		
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try{
+			conn=DbUtil.getCon();
+			ps=conn.prepareStatement(querySql);
+			rs=ps.executeQuery();
+			while(rs.next()){
+				DiaryDomain list=new DiaryDomain();
+				list.setId(rs.getInt("id"));
+				list.setItem(rs.getString("item"));
+				list.setDate(rs.getString("date"));
+				list.setContent(rs.getString("detial"));
+				list.setUserID(rs.getInt("userID"));
+				diarys.add(list);
+			}			
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				DbUtil.close(rs, ps, conn);
+			}
+		return diarys;
 	}
 }

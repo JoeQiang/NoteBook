@@ -15,6 +15,10 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import org.jvnet.substance.SubstanceLookAndFeel;
+import org.jvnet.substance.border.StandardBorderPainter;
+import org.jvnet.substance.button.ClassicButtonShaper;
+import org.jvnet.substance.painter.StandardGradientPainter;
+import org.jvnet.substance.skin.EmeraldDuskSkin;
 import org.jvnet.substance.theme.SubstanceTerracottaTheme;
 
 import com.notebook.biz.UserBiz;
@@ -42,13 +46,15 @@ public class FrmLogin extends JFrame implements ActionListener {
 		btnOk = new JButton("确定");
 		btnCancel = new JButton("取消");
 		btnRegist = new JButton("注册");
-		lblName.setBounds(30, 30, 60, 25);
-		txtName.setBounds(95, 30, 120, 25);
-		lblPwd.setBounds(30, 60, 60, 25);
-		txtPwd.setBounds(95, 60, 120, 25);
-		btnOk.setBounds(30, 90, 60, 25);
-		btnCancel.setBounds(95, 90, 60, 25);
-		btnRegist.setBounds(160, 90, 60, 25);
+		lblName.setBounds(30, 40, 60, 25);
+		lblPwd.setBounds(30, 90, 60, 25);
+		
+		txtName.setBounds(95, 30, 200, 40);
+		txtPwd.setBounds(95, 80, 200, 40);
+		
+		btnOk.setBounds(40, 180, 100, 30);
+		btnCancel.setBounds(160, 180, 100, 30);
+		btnRegist.setBounds(280, 180, 100, 30);
 		btnOk.addActionListener(this);
 		btnCancel.addActionListener(this);
 		btnRegist.addActionListener(this);
@@ -60,8 +66,8 @@ public class FrmLogin extends JFrame implements ActionListener {
 		p.add(btnCancel);
 		p.add(btnRegist);
 		this.add(p);
-		this.setSize(250, 170);
-		this.setLocation(300, 300);
+		this.setSize(400, 270);
+		this.setLocation(400, 300);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -127,20 +133,20 @@ public class FrmLogin extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-		try {
-            UIManager.setLookAndFeel(new SubstanceLookAndFeel());
-            JFrame.setDefaultLookAndFeelDecorated(true);
-            JDialog.setDefaultLookAndFeelDecorated(true);
-            SubstanceLookAndFeel.setCurrentTheme(new SubstanceTerracottaTheme());
-//          SubstanceLookAndFeel.setSkin(new EmeraldDuskSkin());
+//		try {
+//            UIManager.setLookAndFeel(new SubstanceLookAndFeel());
+//            JFrame.setDefaultLookAndFeelDecorated(true);
+//            JDialog.setDefaultLookAndFeelDecorated(true);
+//            SubstanceLookAndFeel.setCurrentTheme(new SubstanceTerracottaTheme());
+//         SubstanceLookAndFeel.setSkin(new EmeraldDuskSkin());
 //          SubstanceLookAndFeel.setCurrentButtonShaper(new ClassicButtonShaper());
 //          SubstanceLookAndFeel.setCurrentWatermark(new SubstanceBubblesWatermark());
 //          SubstanceLookAndFeel.setCurrentBorderPainter(new StandardBorderPainter());
 //            SubstanceLookAndFeel.setCurrentGradientPainter(new StandardGradientPainter());
 //            SubstanceLookAndFeel.setCurrentTitlePainter(new FlatTitePainter());
-        } catch (Exception e) {
-            System.err.println("Something went wrong!");
-        }
+//        } catch (Exception e) {
+//            System.err.println("Something went wrong!");
+//        }
 		FrmLogin frmLogin = new FrmLogin("用户登录");
 		frmLogin.setVisible(true);
 	}
