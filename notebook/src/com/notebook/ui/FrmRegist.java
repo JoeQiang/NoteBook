@@ -26,6 +26,7 @@ public class FrmRegist extends JFrame {
 	private JPasswordField passwordagain;
 	private UserDao dao = new UserDao();
 	private UserBiz biz = UserBiz.getBiz();
+
 	/**
 	 * Launch the application.
 	 */
@@ -100,23 +101,28 @@ public class FrmRegist extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String name = nameText.getText();
 				String nickname = nickNameText.getText();
-				String pwd =String.valueOf(passwordText.getPassword());
-				String pwdag =String.valueOf(passwordagain.getPassword());
-				if (name != null && nickname != null && pwd != null && pwdag != null) {
+				String pwd = String.valueOf(passwordText.getPassword());
+				String pwdag = String.valueOf(passwordagain.getPassword());
+				if (name != null && nickname != null && pwd != null
+						&& pwdag != null) {
 					match(name, nickname, pwd, pwdag);
 				}
 			}
 
-			private void match(String name, String nickname, String pwd, String pwdag) {
+			private void match(String name, String nickname, String pwd,
+					String pwdag) {
 				// TODO 自动生成的方法存根
 
-				if ("".equals(name) || name == null || "".equals(nickname) || nickname == null || "".equals(pwd)
-						|| pwd == null || "".equals(pwdag) || pwdag == null) {
-					JOptionPane.showMessageDialog(FrmRegist.this, "输入不能为空，请重新输入！");
+				if ("".equals(name) || name == null || "".equals(nickname)
+						|| nickname == null || "".equals(pwd) || pwd == null
+						|| "".equals(pwdag) || pwdag == null) {
+					JOptionPane.showMessageDialog(FrmRegist.this,
+							"输入不能为空，请重新输入！");
 					return;
 				}
-				if (biz.regit(nickname,name)) {
-					JOptionPane.showMessageDialog(FrmRegist.this, "该用户名已经被使用，请选择另外的用户名！");
+				if (biz.regit(nickname, name)) {
+					JOptionPane.showMessageDialog(FrmRegist.this,
+							"该用户名已经被使用，请选择另外的用户名！");
 					return;
 				}
 
@@ -125,18 +131,19 @@ public class FrmRegist extends JFrame {
 					int save = dao.save(user);
 					if (save > 0) {
 						JOptionPane.showMessageDialog(FrmRegist.this, "注册成功！");
-//						ClientSelector lgo = new ClientSelector();
-//						lgo.setLocation(500, 250);
-						FrmLogin lg=new FrmLogin("用户登录");
+						// ClientSelector lgo = new ClientSelector();
+						// lgo.setLocation(500, 250);
+						FrmLogin lg = new FrmLogin("用户登录");
 						lg.setVisible(true);
 						FrmRegist.this.dispose();
-//						lgo.setVisible(true);
+						// lgo.setVisible(true);
 					} else {
 						JOptionPane.showMessageDialog(FrmRegist.this, "注册失败");
 					}
 
 				} else {
-					JOptionPane.showMessageDialog(FrmRegist.this, "两次密码不一样，请重新输入！");
+					JOptionPane.showMessageDialog(FrmRegist.this,
+							"两次密码不一样，请重新输入！");
 				}
 			}
 		});
@@ -168,8 +175,8 @@ public class FrmRegist extends JFrame {
 	protected void btnReturnClick() {
 		// TODO 自动生成的方法存根
 		this.setVisible(false);
-//		ClientSelector frmLogin = new ClientSelector();
-		FrmLogin frmLogin=new FrmLogin("用户登录");
+		// ClientSelector frmLogin = new ClientSelector();
+		FrmLogin frmLogin = new FrmLogin("用户登录");
 		frmLogin.setLocation(500, 250);
 		frmLogin.setVisible(true);
 	}

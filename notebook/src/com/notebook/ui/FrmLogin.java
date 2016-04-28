@@ -25,6 +25,7 @@ import com.notebook.biz.UserBiz;
 import com.notebook.dao.DiaryDao;
 import com.notebook.dao.UserDao;
 import com.notebook.pojo.DiaryDomain;
+import com.notebook.utils.Constant;
 
 public class FrmLogin extends JFrame implements ActionListener {
 	private JPanel p;
@@ -48,10 +49,10 @@ public class FrmLogin extends JFrame implements ActionListener {
 		btnRegist = new JButton("注册");
 		lblName.setBounds(30, 40, 60, 25);
 		lblPwd.setBounds(30, 90, 60, 25);
-		
+
 		txtName.setBounds(95, 30, 200, 40);
 		txtPwd.setBounds(95, 80, 200, 40);
-		
+
 		btnOk.setBounds(40, 180, 100, 30);
 		btnCancel.setBounds(160, 180, 100, 30);
 		btnRegist.setBounds(280, 180, 100, 30);
@@ -91,33 +92,38 @@ public class FrmLogin extends JFrame implements ActionListener {
 		String username = txtName.getText();
 		String userpwd = new String(txtPwd.getPassword());
 		//
-		if (username != null && !"".equals(username) && userpwd != null && !"".equals(userpwd)) {
+		if (username != null && !"".equals(username) && userpwd != null
+				&& !"".equals(userpwd)) {
 			System.out.println(username + ":" + userpwd);
 			boolean login = biz.login(username, userpwd);
 			if (login) {
 				this.setVisible(false);
 				System.out.println("登录成功");
-				UserDao userDao=new UserDao();
-				DiaryDao diaryDao=new DiaryDao();
-				ArrayList<DiaryDomain> diarys=new ArrayList<DiaryDomain>();
-				diarys=(ArrayList<DiaryDomain>) diaryDao.getDiarys(userDao.findByName(username));
-//				测试输出
-				for(int i=0;i<diarys.size();i++){
+				UserDao userDao = new UserDao();
+				DiaryDao diaryDao = new DiaryDao();
+				ArrayList<DiaryDomain> diarys = new ArrayList<DiaryDomain>();
+				diarys = (ArrayList<DiaryDomain>) diaryDao.getDiarys(userDao
+						.findByName(username));
+				// 测试输出
+				for (int i = 0; i < diarys.size(); i++) {
 					System.out.println(diarys.get(i).getContent());
 				}
-//				展示笔记主界面
+				// 展示笔记主界面
 				DiaryFrame df = new DiaryFrame();
-				df.userID=userDao.findByName(username);
+				df.userID = userDao.findByName(username);
+				Constant.USER_ID = df.userID;
 				df.launchFrame();
-//				展示聊天界面
+				// 展示聊天界面
 				FrmMain frmMain = new FrmMain();
-//				frmMain.frame.setVisible(true);
+				// frmMain.frame.setVisible(true);
 			} else {
-				JOptionPane.showMessageDialog(btnOk, "错误的用户名或密码", "提示", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(btnOk, "错误的用户名或密码", "提示",
+						JOptionPane.WARNING_MESSAGE);
 			}
 
 		} else {
-			JOptionPane.showMessageDialog(btnOk, "用户名或密码不能为空", "提示", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(btnOk, "用户名或密码不能为空", "提示",
+					JOptionPane.WARNING_MESSAGE);
 		}
 	}
 
@@ -133,21 +139,25 @@ public class FrmLogin extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-//		皮肤包
-//		try {
-//            UIManager.setLookAndFeel(new SubstanceLookAndFeel());
-//            JFrame.setDefaultLookAndFeelDecorated(true);
-//            JDialog.setDefaultLookAndFeelDecorated(true);
-//            SubstanceLookAndFeel.setCurrentTheme(new SubstanceTerracottaTheme());
-//         SubstanceLookAndFeel.setSkin(new EmeraldDuskSkin());
-//          SubstanceLookAndFeel.setCurrentButtonShaper(new ClassicButtonShaper());
-//          SubstanceLookAndFeel.setCurrentWatermark(new SubstanceBubblesWatermark());
-//          SubstanceLookAndFeel.setCurrentBorderPainter(new StandardBorderPainter());
-//            SubstanceLookAndFeel.setCurrentGradientPainter(new StandardGradientPainter());
-//            SubstanceLookAndFeel.setCurrentTitlePainter(new FlatTitePainter());
-//        } catch (Exception e) {
-//            System.err.println("Something went wrong!");
-//        }
+		// 皮肤包
+		// try {
+		// UIManager.setLookAndFeel(new SubstanceLookAndFeel());
+		// JFrame.setDefaultLookAndFeelDecorated(true);
+		// JDialog.setDefaultLookAndFeelDecorated(true);
+		// SubstanceLookAndFeel.setCurrentTheme(new SubstanceTerracottaTheme());
+		// SubstanceLookAndFeel.setSkin(new EmeraldDuskSkin());
+		// SubstanceLookAndFeel.setCurrentButtonShaper(new
+		// ClassicButtonShaper());
+		// SubstanceLookAndFeel.setCurrentWatermark(new
+		// SubstanceBubblesWatermark());
+		// SubstanceLookAndFeel.setCurrentBorderPainter(new
+		// StandardBorderPainter());
+		// SubstanceLookAndFeel.setCurrentGradientPainter(new
+		// StandardGradientPainter());
+		// SubstanceLookAndFeel.setCurrentTitlePainter(new FlatTitePainter());
+		// } catch (Exception e) {
+		// System.err.println("Something went wrong!");
+		// }
 		FrmLogin frmLogin = new FrmLogin("用户登录");
 		frmLogin.setVisible(true);
 	}
