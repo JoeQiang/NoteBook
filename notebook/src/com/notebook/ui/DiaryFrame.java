@@ -58,9 +58,6 @@ public class DiaryFrame extends JFrame implements ActionListener {
 	public static int userID;
 	MenuItem infoItem, cpwdItem;
 
-	public DiaryFrame() {
-	}
-
 	static JTree tree = null;
 	static DefaultMutableTreeNode root = new DefaultMutableTreeNode("我的笔记");
 	static ArrayList<DefaultMutableTreeNode> nodes = new ArrayList<DefaultMutableTreeNode>();
@@ -76,6 +73,9 @@ public class DiaryFrame extends JFrame implements ActionListener {
 	JButton bSave, bDel;
 	Diary diary = null;
 	private JScrollPane jsp2;
+
+	public DiaryFrame() {
+	}
 
 	public void launchFrame() {
 		// 获取科目名称
@@ -182,7 +182,9 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		m2.addActionListener(menuListener);
 		m3.addActionListener(menuListener);
 		m4.addActionListener(menuListener);
-		m5.addActionListener(this);
+
+		infoItem.addActionListener(this);
+		cpwdItem.addActionListener(this);
 
 		this.getContentPane().add(splitPane);
 		this.setVisible(true);
@@ -608,8 +610,12 @@ public class DiaryFrame extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == infoItem) {
 			System.out.println("个人信息页");
+			InfoFrame infoFrame = new InfoFrame();
+			infoFrame.setVisible(true);
 		} else if (e.getSource() == cpwdItem) {
 			System.out.println("修改密码页");
+			ChangePwdFrame changePwdFrame = new ChangePwdFrame();
+			changePwdFrame.setVisible(true);
 		}
 	}
 }
