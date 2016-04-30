@@ -29,17 +29,6 @@ public class QueryDiary extends JFrame implements ActionListener{
 	JButton search=new JButton("搜索");
 	JButton back=new JButton("返回");
 	JLabel title=new JLabel("搜索结果：");
-//	表格
-	final String[] colHeads = {"时间", "科目", "内容"};
-	final Object[][] data={
-	        {"1月1日", "语文","作文书写规范" },
-	        {"1月2日", "数学","函数声明方法" },
-	        {"1月3日", "英语","介词" }
-	    };
-	JTable table = new JTable(data, colHeads);
-	int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
-    int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-    JScrollPane jsp = new JScrollPane(table, v, h);
     
 	public QueryDiary(){
 		setBounds(400,150,500,500);
@@ -58,9 +47,6 @@ public class QueryDiary extends JFrame implements ActionListener{
 		back.addActionListener(this);
 		add(jtf);add(item);add(date);add(detial);add(search);add(title);add(back);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-//		表格
-		jsp.setBounds(0, 150, 500, 500);
-		add(jsp, BorderLayout.CENTER);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -87,5 +73,18 @@ public class QueryDiary extends JFrame implements ActionListener{
 		DiaryDao diaryDao=new DiaryDao();
 		ArrayList<DiaryDomain> diarys=new ArrayList<DiaryDomain>();
 		diarys=diaryDao.getDiarysByArg(inputText, depend, userID);
+//		表格
+		final String[] colHeads = {"时间", "科目", "内容"};
+		final Object[][] data={
+		        {"1月1日", "语文","作文书写规范" },
+		        {"1月2日", "数学","函数声明方法" },
+		        {"1月3日", "英语","介词" }
+		    };
+		JTable table = new JTable(data, colHeads);
+		int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+	    int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+	    JScrollPane jsp = new JScrollPane(table, v, h);
+		jsp.setBounds(0, 150, 500, 500);
+		add(jsp, BorderLayout.CENTER);
 	}
 }

@@ -114,7 +114,7 @@ public class FrmLogin extends JFrame implements ActionListener {
 				Constant.USER_ID = df.userID;
 				df.launchFrame();
 				// 展示聊天界面
-				FrmMain frmMain = new FrmMain();
+//				FrmMain frmMain = new FrmMain();
 				// frmMain.frame.setVisible(true);
 			} else {
 				JOptionPane.showMessageDialog(btnOk, "错误的用户名或密码", "提示",

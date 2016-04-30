@@ -32,7 +32,7 @@ public class UserDao extends BaseDao {
 			ps.setString(1, name);
 			rs=ps.executeQuery();
 			while(rs.next()){
-				userID=rs.getInt(rs.getInt("id"));
+				userID=rs.getInt("id");
 			}			
 			}catch(Exception e){
 				e.printStackTrace();
