@@ -31,7 +31,8 @@ public class QueryDiary extends JFrame implements ActionListener{
 	JLabel title=new JLabel("搜索结果：");
     
 	public QueryDiary(){
-		setBounds(400,150,500,500);
+		setTitle("查询笔记");
+		setBounds(420,60,570,620);
 		setLayout(null);
 		grp.add(item);
 		grp.add(date);
@@ -42,7 +43,7 @@ public class QueryDiary extends JFrame implements ActionListener{
 		detial.setBounds(240, 60, 80, 30);
 		search.setBounds(390, 20, 60, 30);
 		title.setBounds(40, 100, 80, 30);
-		back.setBounds(200, 400, 100, 30);
+		back.setBounds(460, 20, 60, 30);
 		search.addActionListener(this);
 		back.addActionListener(this);
 		add(jtf);add(item);add(date);add(detial);add(search);add(title);add(back);
@@ -75,16 +76,18 @@ public class QueryDiary extends JFrame implements ActionListener{
 		diarys=diaryDao.getDiarysByArg(inputText, depend, userID);
 //		表格
 		final String[] colHeads = {"时间", "科目", "内容"};
-		final Object[][] data={
-		        {"1月1日", "语文","作文书写规范" },
-		        {"1月2日", "数学","函数声明方法" },
-		        {"1月3日", "英语","介词" }
-		    };
+		final String[][] data=new String[diarys.size()][3];
+//		将集合赋值到二维数组
+		for(int i=0;i<diarys.size();i++){
+			data[i][0]=diarys.get(i).getDate();
+			data[i][1]=diarys.get(i).getItem();
+			data[i][2]=diarys.get(i).getContent();
+		}
 		JTable table = new JTable(data, colHeads);
 		int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 	    int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 	    JScrollPane jsp = new JScrollPane(table, v, h);
-		jsp.setBounds(0, 150, 500, 500);
+		jsp.setBounds(40, 150, 480, 400);
 		add(jsp, BorderLayout.CENTER);
 	}
 }

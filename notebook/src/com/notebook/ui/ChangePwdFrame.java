@@ -68,8 +68,8 @@ public class ChangePwdFrame extends JFrame implements ActionListener {
 
 		setTitle("\u5BC6\u7801\u4FEE\u6539");
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 287, 211);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setBounds(500, 200, 287, 211);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

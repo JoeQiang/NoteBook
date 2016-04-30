@@ -48,6 +48,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import com.notebook.dao.DiaryDao;
 import com.notebook.pojo.DiaryDomain;
@@ -58,7 +61,8 @@ public class DiaryFrame extends JFrame implements ActionListener {
 	public static int userID;
 	public static int currentDiaryID;//保存当前编辑笔记ID
 	MenuItem infoItem, cpwdItem;
-
+	
+	DefaultTreeModel model;
 	static JTree tree = null;
 	static DefaultMutableTreeNode root = new DefaultMutableTreeNode("我的笔记");
 	static ArrayList<DefaultMutableTreeNode> nodes = new ArrayList<DefaultMutableTreeNode>();
@@ -68,7 +72,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 	JTextArea jta = new JTextArea();
 	MenuBar menu = null;
 	Menu m1, m2, m3, m4, m5;
-	MenuItem m1a, m1b, m1c, m1d, m1e, m2a, m2b, m2c, m2d, m3a, m4a;
+	MenuItem m1a, m1b, m1c, m1d, m1e,m1f, m2a, m2b, m2c, m2d, m3a, m4a;
 
 	PopupMenu pMenu = null;
 	JButton bSave, bDel;
@@ -84,13 +88,13 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		DiaryDao diaryDao = new DiaryDao();
 		List<String> nodesContents = diaryDao.getItemByUserID(userID);
 		// List<String> nodesContents = FileIO.readTxtFile(PATH);
-		int WIDTH = 640, HEIGHT = 480;
+		int WIDTH = 1000, HEIGHT = 600;
 		setTitle("课堂笔记本");
 		setSize(WIDTH, HEIGHT);
-		setLocation(400, 180);
+		setLocation(200, 50);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		jta.setBackground(Color.DARK_GRAY);
+		jta.setBackground(Color.LIGHT_GRAY);
 		jta.setSize(20, 30);
 		menu = new MenuBar();
 		pMenu = new PopupMenu();
@@ -110,11 +114,15 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		m1d.setShortcut(new MenuShortcut(KeyEvent.VK_Q));
 		m1e = new MenuItem("查询笔记");
 		m1e.setShortcut(new MenuShortcut(KeyEvent.VK_U));
+		m1f=new MenuItem("新建笔记");
+		m1f.setShortcut(new MenuShortcut(KeyEvent.VK_B));
 
 		infoItem = new MenuItem("个人信息");
 		cpwdItem = new MenuItem("修改密码");
 
 		m1.add(m1a);
+		m1.addSeparator();
+		m1.add(m1f);
 		m1.addSeparator();
 		m1.add(m1b);
 		m1.addSeparator();
@@ -152,6 +160,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		menu.add(m5);
 		this.setMenuBar(menu);
 		tree = new JTree(root);
+		model = (DefaultTreeModel)tree.getModel();
 		JScrollPane jsp1 = new JScrollPane(tree);
 		JPanel jp = new JPanel();
 		jp.setLayout(new BorderLayout());
@@ -165,6 +174,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		jp.add(bottom, BorderLayout.SOUTH);
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				jsp1, jp);
+		splitPane.setDividerLocation(180);
 		// 赋值科目节点
 		Iterator<String> it = nodesContents.iterator();
 		while (it.hasNext()) {
@@ -185,7 +195,6 @@ public class DiaryFrame extends JFrame implements ActionListener {
 
 		infoItem.addActionListener(this);
 		cpwdItem.addActionListener(this);
-
 		this.getContentPane().add(splitPane);
 		this.setVisible(true);
 	}
@@ -237,7 +246,37 @@ public class DiaryFrame extends JFrame implements ActionListener {
 							e1.printStackTrace();
 						}
 					}
-				} else if (e.getActionCommand().equals("查询笔记")) {
+				}else if (e.getActionCommand().equals("新建笔记")) {
+//					直接创建默认节点并保存数据库
+					//获取选中节点  
+	                DefaultMutableTreeNode selectedNode  
+	                    = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();  
+	                //如果节点为空，直接返回  
+	                if (selectedNode == null) return;  
+	                //创建一个新节点  
+	                DetialNode newNode = new DetialNode("新增笔记");
+	                //直接通过节点添加新节点，则需要调用tree的updateUI方法  
+	                selectedNode.add(newNode);
+//	               	 保存笔记数据到数据库
+	                DiaryDomain diary = new DiaryDomain();
+					diary.setUserID(userID);
+					diary.setItem(newNode.getParent().getParent().getParent().toString());
+					diary.setDate(newNode.getParent().getParent().toString()+newNode.getParent().toString());
+					diary.setContent("笔记内容为空，赶紧添加吧！");
+					DiaryDao diaryDao = new DiaryDao();
+					int key = 0;
+					try {
+						key=diaryDao.addDiaryReKey(diary);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+					newNode.setCurrentDiaryID(key);
+	                //--------下面代码实现显示新节点（自动展开父节点）-------  
+	                TreeNode[] nodes = model.getPathToRoot(newNode);  
+	                TreePath path = new TreePath(nodes);  
+	                tree.scrollPathToVisible(path);  
+	                tree.updateUI();
+				}else if (e.getActionCommand().equals("查询笔记")) {
 					QueryDiary ad = new QueryDiary();
 					ad.userID = userID;
 					ad.setVisible(true);
@@ -383,7 +422,6 @@ public class DiaryFrame extends JFrame implements ActionListener {
 								String title=detials.get(i).getContent().substring(0,10);
 								DetialNode detialNode = new DetialNode(title);
 								detialNode.setCurrentDiaryID(detials.get(i).getId());
-								System.out.println(detialNode.getCurrentDiaryID());
 								node.add(detialNode);
 							}
 						}
@@ -418,9 +456,10 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		}
 
 		public void init() {
+			setTitle("格式设置");
 			lb1.setBounds(20, 20, 80, 30);
 			setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-			setBounds(300, 100, 558, 300);
+			setBounds(400, 150, 558, 250);
 			contentPane = new JPanel();
 			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 			setContentPane(contentPane);
@@ -448,7 +487,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 			rdbtnRed.setBounds(5, 5, 61, 23);
 			Color.add(rdbtnRed);
 
-			final JRadioButton rdbtnBlue = new JRadioButton("蓝");
+			final JRadioButton rdbtnBlue = new JRadioButton("黑");
 			rdbtnBlue.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 
@@ -576,7 +615,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 			if (colorType == 1) {
 				jta.setForeground(Color.red);
 			} else if (colorType == 2) {
-				jta.setForeground(Color.blue);
+				jta.setForeground(Color.black);
 			} else {
 				jta.setForeground(Color.gray);
 			}

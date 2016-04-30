@@ -48,14 +48,14 @@ public class FrmLogin extends JFrame implements ActionListener {
 		btnCancel = new JButton("È¡Ïû");
 		btnRegist = new JButton("×¢²á");
 		lblName.setBounds(30, 40, 60, 25);
-		lblPwd.setBounds(30, 90, 60, 25);
+		lblPwd.setBounds(30, 110, 60, 25);
 
-		txtName.setBounds(95, 30, 200, 40);
-		txtPwd.setBounds(95, 80, 200, 40);
+		txtName.setBounds(95, 30, 254, 40);
+		txtPwd.setBounds(95, 100, 254, 40);
 
-		btnOk.setBounds(40, 180, 100, 30);
-		btnCancel.setBounds(160, 180, 100, 30);
-		btnRegist.setBounds(280, 180, 100, 30);
+		btnOk.setBounds(30, 180, 100, 30);
+		btnCancel.setBounds(140, 180, 100, 30);
+		btnRegist.setBounds(250, 180, 100, 30);
 		btnOk.addActionListener(this);
 		btnCancel.addActionListener(this);
 		btnRegist.addActionListener(this);
@@ -68,7 +68,7 @@ public class FrmLogin extends JFrame implements ActionListener {
 		p.add(btnRegist);
 		this.add(p);
 		this.setSize(400, 270);
-		this.setLocation(400, 300);
+		this.setLocation(520, 200);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

@@ -64,8 +64,8 @@ public class InfoFrame extends JFrame implements ActionListener {
 
 		setType(Type.POPUP);
 		setTitle("\u4E2A\u4EBA\u4FE1\u606F\u9875");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 341, 300);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setBounds(500, 100, 341, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

@@ -111,9 +111,9 @@ public class FrmMain extends Thread {
 		
 		frame.add(splitpaneH);
 		frame.setSize(500, 400);
-		frame.setLocation(300, 300);
+		frame.setLocation(400, 100);
 		frame.setResizable(false);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.setVisible(true);
 
 		buttonListener = new ButtonListener();

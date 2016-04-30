@@ -1,12 +1,12 @@
 package com.notebook.dao;
 
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import com.mysql.jdbc.Statement;
 import com.notebook.pojo.DiaryDomain;
 import com.notebook.utils.DbUtil;
 
@@ -136,7 +136,10 @@ public class DiaryDao{
 	}
 	public ArrayList<DiaryDomain> getDiarysByArg(String detial,String depend,int userID) {
 		ArrayList<DiaryDomain> diarys=new ArrayList<DiaryDomain>();
-		String querySql="select * from diary where "+depend+" like '%"+detial+"%' and userID="+userID+";";		
+		String querySql="select * from diary where "+depend+" like '%"+detial+"%' and userID="+userID+";";	
+		if(depend=="" || depend==null){
+			querySql="select * from diary where detial like '%"+detial+"%' and userID="+userID+";";	
+		}
 		Connection conn=null;
 		PreparedStatement ps=null;
 		ResultSet rs=null;
@@ -206,5 +209,39 @@ public class DiaryDao{
 			}finally{
 				DbUtil.close(rs, ps, conn);
 			}
+	}
+	/**
+	 * @param diary
+	 * 保存笔记并且返回主键
+	 * @return
+	 * @throws SQLException 
+	 */
+	public int addDiaryReKey(DiaryDomain diary) throws SQLException{
+		int key=0;
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		StringBuffer sql= new StringBuffer("insert into diary(item,date,detial,userID) values(?,?,?,?)");
+		try{
+			conn = DbUtil.getCon();
+			pstmt = conn.prepareStatement(sql.toString(),Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1, diary.getItem());
+			pstmt.setString(2, diary.getDate());
+			pstmt.setString(3, diary.getContent());
+			pstmt.setInt(4, diary.getUserID());
+			pstmt.executeUpdate();
+			//获得插入主键
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()){
+				key=rs.getInt(1);
+				System.out.println("主键"+key);
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}finally{
+			pstmt.close();
+			conn.close();
+		}
+		return key;		
 	}
 }
