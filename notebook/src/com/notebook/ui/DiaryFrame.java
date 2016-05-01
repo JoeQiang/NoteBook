@@ -53,6 +53,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import com.notebook.dao.DiaryDao;
+import com.notebook.dao.UserDao;
 import com.notebook.pojo.DiaryDomain;
 import com.notebook.utils.FileIO;
 
@@ -64,7 +65,8 @@ public class DiaryFrame extends JFrame implements ActionListener {
 	
 	DefaultTreeModel model;
 	static JTree tree = null;
-	static DefaultMutableTreeNode root = new DefaultMutableTreeNode("我的笔记");
+	
+	static DefaultMutableTreeNode root;
 	static ArrayList<DefaultMutableTreeNode> nodes = new ArrayList<DefaultMutableTreeNode>();
 	List<String> newCreateNodesContent = new ArrayList<String>();;
 
@@ -72,22 +74,17 @@ public class DiaryFrame extends JFrame implements ActionListener {
 	JTextArea jta = new JTextArea();
 	MenuBar menu = null;
 	Menu m1, m2, m3, m4, m5;
-	MenuItem m1a, m1b, m1c, m1d, m1e,m1f, m2a, m2b, m2c, m2d, m3a, m4a;
+	MenuItem m1a, m1b, m1c, m1d, m1e,m1f, m2a, m2b, m2c, m2d, m3a, m4a,m4b;
 
 	PopupMenu pMenu = null;
 	JButton bSave, bDel;
 	Diary diary = null;
 	private JScrollPane jsp2;
-
 	public DiaryFrame() {
 	}
-
 	public void launchFrame() {
-		// 获取科目名称
-		// 更改数据库获取科目数据
-		DiaryDao diaryDao = new DiaryDao();
-		List<String> nodesContents = diaryDao.getItemByUserID(userID);
-		// List<String> nodesContents = FileIO.readTxtFile(PATH);
+		String rootTitle=new UserDao().findNickNameById(userID);
+		root = new DefaultMutableTreeNode(rootTitle+"的笔记");
 		int WIDTH = 1000, HEIGHT = 600;
 		setTitle("课堂笔记本");
 		setSize(WIDTH, HEIGHT);
@@ -150,7 +147,9 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		m3a = new MenuItem("聊天");
 		m3.add(m3a);
 		m4a = new MenuItem("颜色格式");
+		m4b=new MenuItem("自动换行");
 		m4.add(m4a);
+		m4.add(m4b);
 
 		m5.add(infoItem);
 		m5.add(cpwdItem);
@@ -174,7 +173,10 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		jp.add(bottom, BorderLayout.SOUTH);
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				jsp1, jp);
-		splitPane.setDividerLocation(180);
+		splitPane.setDividerLocation(220);
+		// 更改数据库获取科目数据
+		DiaryDao diaryDao = new DiaryDao();
+		List<String> nodesContents = diaryDao.getItemByUserID(userID);
 		// 赋值科目节点
 		Iterator<String> it = nodesContents.iterator();
 		while (it.hasNext()) {
@@ -222,6 +224,8 @@ public class DiaryFrame extends JFrame implements ActionListener {
 				if (e.getActionCommand().equals("颜色格式")) {
 					MyFont myview = new MyFont();
 					myview.setVisible(true);
+				}else if(e.getActionCommand().equals("自动换行")){
+					jta.setLineWrap(true);
 				}
 			}
 			if (e.getSource() == infoItem) {
@@ -239,12 +243,20 @@ public class DiaryFrame extends JFrame implements ActionListener {
 					newCreateNodesContent.add(value);
 					DiaryFrame.initTree();
 				} else if (e.getActionCommand().equals("保存笔记")) {
-					for (int i = 0; i < newCreateNodesContent.size(); i++) {
-						try {
-							FileIO.save(PATH, newCreateNodesContent.get(i));
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+							.getLastSelectedPathComponent();
+					String str = node.toString();
+					if (node.isLeaf()) {
+						DiaryDomain diary = new DiaryDomain();
+						diary.setUserID(userID);
+						diary.setItem(node.getParent().getParent().toString());
+						diary.setDate(str + node.getParent().toString());
+						diary.setContent(jta.getText());
+						DiaryDao diaryDao = new DiaryDao();
+						System.out.println(currentDiaryID+"   "+jta.getText());
+						diaryDao.updateDiarysById(currentDiaryID,jta.getText());
+				
+						new JOptionPane().showMessageDialog(df, "笔记保存成功！");
 					}
 				}else if (e.getActionCommand().equals("新建笔记")) {
 //					直接创建默认节点并保存数据库
@@ -324,7 +336,6 @@ public class DiaryFrame extends JFrame implements ActionListener {
 						.getLastSelectedPathComponent();
 				String str = node.toString();
 				if (node.isLeaf()) {
-					BufferedWriter out = null;
 					DiaryDomain diary = new DiaryDomain();
 					diary.setUserID(userID);
 					diary.setItem(node.getParent().getParent().toString());
@@ -333,40 +344,20 @@ public class DiaryFrame extends JFrame implements ActionListener {
 					DiaryDao diaryDao = new DiaryDao();
 					System.out.println(currentDiaryID+"   "+jta.getText());
 					diaryDao.updateDiarysById(currentDiaryID,jta.getText());
-					new JOptionPane().showMessageDialog(df, "笔记保存成功！");
+					JOptionPane.showMessageDialog(df, "笔记保存成功！");
 				}
 			} else if (e.getSource() == bDel) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+				DefaultMutableTreeNode node = (DetialNode) tree
 						.getLastSelectedPathComponent();
 				String str = node.toString();
-				if (node.isLeaf()) {
-					BufferedWriter out = null;
-					try {
-						String fileName = node.getParent().getParent()
-								.toString()
-								+ node.getParent().toString() + str + ".txt";
-						File file = new File(fileName);
-						out = new BufferedWriter(new FileWriter(new File(
-								"del.bat")));
-						String cmd = "del" + file.getAbsolutePath().toString();
-						out.write(cmd);
-						out.newLine();
-						out.flush();
-						jta.setText("文件已被删除");
-						del();
-					} catch (IOException err) {
-						err.printStackTrace();
-					} finally {
-						try {
-							if (out != null)
-								out.close();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					}
+				DiaryDao diaryDao=new DiaryDao();
+				int res=JOptionPane.showConfirmDialog(null,"你确定要删除该笔记文件吗？","提示",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+				if(res==JOptionPane.YES_OPTION){
+					diaryDao.delDiaryById(((DetialNode) node).getCurrentDiaryID(), userID);
+					JOptionPane.showMessageDialog(df, "删除成功！");
+					model.removeNodeFromParent(node); 
 				}
 			}
-
 		}
 
 		private void del() {
@@ -384,24 +375,57 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		 */
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
+			
+//			m1a = new MenuItem("新建科目");
+//			m1a.setShortcut(new MenuShortcut(KeyEvent.VK_N));
+//			m1b = new MenuItem("保存笔记");
+//			m1b.setShortcut(new MenuShortcut(KeyEvent.VK_S));
+//			m1c = new MenuItem("清空笔记");
+//			m1c.setShortcut(new MenuShortcut(KeyEvent.VK_D));
+//			m1d = new MenuItem("退出系统");
+//			m1d.setShortcut(new MenuShortcut(KeyEvent.VK_Q));
+//			m1e = new MenuItem("查询笔记");
+//			m1e.setShortcut(new MenuShortcut(KeyEvent.VK_U));
+//			m1f=new MenuItem("新建笔记");
+//			m1f.setShortcut(new MenuShortcut(KeyEvent.VK_B));
+			
 			jta.setText("");
 			if (e.getSource() == tree) {
 //				实例化树节点
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+//				判断节点类型：年/月/日/笔记内容
+				String nodeType="";
+				if(node.getParent()!=null){
+					if(node.getParent().toString().indexOf("日")>=0){
+						nodeType="内容节点";
+//						不能新建科目和笔记
+						m1a.setEnabled(false);m1f.setEnabled(false);m1b.setEnabled(true);
+					}
+				}
+				if(node.toString().indexOf("日")>=0){
+					nodeType="日节点";
+//					不能新建科目、保存
+					m1a.setEnabled(false);m1f.setEnabled(true);m1b.setEnabled(false);
+				}
+				if(node.toString().indexOf("月")>=0){
+					nodeType="月节点";
+					m1a.setEnabled(false);m1f.setEnabled(false);m1b.setEnabled(false);
+				}
+				if(node.getParent()==node.getRoot()){
+					nodeType="科目节点";
+					m1a.setEnabled(false);m1f.setEnabled(false);m1b.setEnabled(false);
+				}
+				if(node.isRoot()){
+					nodeType="根节点";
+//					不能新建笔记
+					m1a.setEnabled(true);m1f.setEnabled(false);m1b.setEnabled(false);
+				}
 //				如果节点没有子节点
 				if (node.isLeaf()) {
 //					判断该用户是否有笔记
 					DiaryDao diaryDao=new DiaryDao();
 //					如果有笔记
 					if(diaryDao.hasItem(userID)){
-//						判断节点类型：日/笔记内容
-						String nodeType="";
-						if(node.getParent().toString().indexOf("日")>=0){
-							nodeType="内容节点";
-						}
-						if(node.toString().indexOf("日")>=0){
-							nodeType="日节点";
-						}
 						String item=node.getParent().getParent().toString();
 						String month=node.getParent().toString();
 						String day= node.toString();
@@ -414,9 +438,6 @@ public class DiaryFrame extends JFrame implements ActionListener {
 							String jtaContent=diaryDao.getDiaryById(currentDiaryID).getContent();
 							jta.setText(jtaContent);
 						}
-						if(detials.size()==0 && nodeType.equals("日节点")){
-							new JOptionPane().showMessageDialog(df, "该条件下并没有笔记！");
-						}
 						if(detials.size()!=0 && nodeType.equals("日节点")){
 							for(int i=0;i<detials.size();i++){
 								String title=detials.get(i).getContent().substring(0,10);
@@ -425,7 +446,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 								node.add(detialNode);
 							}
 						}
-					}else{
+					}else if(nodeType!="日节点"){
 //						如果没有新建科目
 						new JOptionPane().showMessageDialog(df, "你还没有新建科目，请先新建！");
 					}
@@ -569,7 +590,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 			/**
 			 * 字体大小监听
 			 */
-			String[] mySize = { "10", "20", "30" };
+			String[] mySize = { "10","16", "20","26", "30","36", };
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			final JComboBox comboBox_1 = new JComboBox(mySize);
 			comboBox_1.addActionListener(new ActionListener() {

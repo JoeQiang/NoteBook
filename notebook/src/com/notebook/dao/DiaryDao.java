@@ -66,7 +66,7 @@ public class DiaryDao{
 	}
 	public List<String> getItemByUserID(int userID){
 		List<String> items = new ArrayList<String>();
-		String querySql="select item from diary where userID=?";		
+		String querySql="select distinct item from diary where userID=?";	
 		Connection conn=null;
 		PreparedStatement ps=null;
 		ResultSet rs=null;
@@ -243,5 +243,22 @@ public class DiaryDao{
 			conn.close();
 		}
 		return key;		
+	}
+	public void delDiaryById(int diaryID,int userID) {
+		String querySql="delete from diary where id=? and userID=?;";		
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try{
+			conn=DbUtil.getCon();
+			ps=conn.prepareStatement(querySql);
+			ps.setInt(1, diaryID);
+			ps.setInt(2, userID);
+			ps.executeUpdate();	
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				DbUtil.close(rs, ps, conn);
+			}
 	}
 }

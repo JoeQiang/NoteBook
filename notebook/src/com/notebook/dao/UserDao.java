@@ -41,6 +41,27 @@ public class UserDao extends BaseDao {
 			}
 		return userID;
 	}
+	public String findNickNameById(int id) {
+		String nickName="";
+		String querySql="select nickname from t_user where id=?";		
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try{
+			conn=DbUtil.getCon();
+			ps=conn.prepareStatement(querySql);
+			ps.setInt(1, id);
+			rs=ps.executeQuery();
+			while(rs.next()){
+				nickName=rs.getString("nickname");
+			}			
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				DbUtil.close(rs, ps, conn);
+			}
+		return nickName;
+	}
 	public User findByNickName(String name){
 		String sql = "select * from t_user where name = ? ";
 		return (User) super.findOne(sql, name);
