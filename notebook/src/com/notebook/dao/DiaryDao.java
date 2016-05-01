@@ -154,6 +154,7 @@ public class DiaryDao{
 				list.setDate(rs.getString("date"));
 				list.setContent(rs.getString("detial"));
 				list.setUserID(rs.getInt("userID"));
+				list.setTitle(rs.getString("title"));
 				diarys.add(list);
 			}			
 			}catch(Exception e){
@@ -183,6 +184,7 @@ public class DiaryDao{
 				list.setDate(rs.getString("date"));
 				list.setContent(rs.getString("detial"));
 				list.setUserID(rs.getInt("userID"));
+				list.setTitle(rs.getString("title"));
 				diarys.add(list);
 			}			
 			}catch(Exception e){
@@ -221,7 +223,7 @@ public class DiaryDao{
 		Connection conn=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
-		StringBuffer sql= new StringBuffer("insert into diary(item,date,detial,userID) values(?,?,?,?)");
+		StringBuffer sql= new StringBuffer("insert into diary(item,date,detial,userID,title) values(?,?,?,?,?)");
 		try{
 			conn = DbUtil.getCon();
 			pstmt = conn.prepareStatement(sql.toString(),Statement.RETURN_GENERATED_KEYS);
@@ -229,6 +231,7 @@ public class DiaryDao{
 			pstmt.setString(2, diary.getDate());
 			pstmt.setString(3, diary.getContent());
 			pstmt.setInt(4, diary.getUserID());
+			pstmt.setString(5, diary.getTitle());
 			pstmt.executeUpdate();
 			//获得插入主键
 			rs = pstmt.getGeneratedKeys();

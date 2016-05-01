@@ -45,6 +45,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -105,7 +107,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		m1a.setShortcut(new MenuShortcut(KeyEvent.VK_N));
 		m1b = new MenuItem("保存笔记");
 		m1b.setShortcut(new MenuShortcut(KeyEvent.VK_S));
-		m1c = new MenuItem("清空笔记");
+		m1c = new MenuItem("删除笔记");
 		m1c.setShortcut(new MenuShortcut(KeyEvent.VK_D));
 		m1d = new MenuItem("退出系统");
 		m1d.setShortcut(new MenuShortcut(KeyEvent.VK_Q));
@@ -259,19 +261,23 @@ public class DiaryFrame extends JFrame implements ActionListener {
 						new JOptionPane().showMessageDialog(df, "笔记保存成功！");
 					}
 				}else if (e.getActionCommand().equals("新建笔记")) {
-//					直接创建默认节点并保存数据库
+					String value = new JOptionPane().showInputDialog(df,"请输入新建笔记标题：");
+					if(value=="" || value==null){
+						value="笔记标题";
+					}
 					//获取选中节点  
 	                DefaultMutableTreeNode selectedNode  
 	                    = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();  
 	                //如果节点为空，直接返回  
 	                if (selectedNode == null) return;  
 	                //创建一个新节点  
-	                DetialNode newNode = new DetialNode("新增笔记");
+	                DetialNode newNode = new DetialNode(value);
 	                //直接通过节点添加新节点，则需要调用tree的updateUI方法  
 	                selectedNode.add(newNode);
 //	               	 保存笔记数据到数据库
 	                DiaryDomain diary = new DiaryDomain();
 					diary.setUserID(userID);
+					diary.setTitle(value);
 					diary.setItem(newNode.getParent().getParent().getParent().toString());
 					diary.setDate(newNode.getParent().getParent().toString()+newNode.getParent().toString());
 					diary.setContent("笔记内容为空，赶紧添加吧！");
@@ -292,11 +298,15 @@ public class DiaryFrame extends JFrame implements ActionListener {
 					QueryDiary ad = new QueryDiary();
 					ad.userID = userID;
 					ad.setVisible(true);
-				} else if (e.getActionCommand().equals("清空笔记")) {
-					try {
-						FileIO.save_2(PATH, "");
-					} catch (IOException e1) {
-						e1.printStackTrace();
+				} else if (e.getActionCommand().equals("删除笔记")) {
+					DefaultMutableTreeNode node = (DetialNode) tree
+							.getLastSelectedPathComponent();
+					DiaryDao diaryDao=new DiaryDao();
+					int res=JOptionPane.showConfirmDialog(null,"你确定要删除该笔记文件吗？","提示",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+					if(res==JOptionPane.YES_OPTION){
+						diaryDao.delDiaryById(((DetialNode) node).getCurrentDiaryID(), userID);
+						JOptionPane.showMessageDialog(df, "删除成功！");
+						model.removeNodeFromParent(node); 
 					}
 				}
 
@@ -342,14 +352,12 @@ public class DiaryFrame extends JFrame implements ActionListener {
 					diary.setDate(str + node.getParent().toString());
 					diary.setContent(jta.getText());
 					DiaryDao diaryDao = new DiaryDao();
-					System.out.println(currentDiaryID+"   "+jta.getText());
 					diaryDao.updateDiarysById(currentDiaryID,jta.getText());
 					JOptionPane.showMessageDialog(df, "笔记保存成功！");
 				}
 			} else if (e.getSource() == bDel) {
 				DefaultMutableTreeNode node = (DetialNode) tree
 						.getLastSelectedPathComponent();
-				String str = node.toString();
 				DiaryDao diaryDao=new DiaryDao();
 				int res=JOptionPane.showConfirmDialog(null,"你确定要删除该笔记文件吗？","提示",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
 				if(res==JOptionPane.YES_OPTION){
@@ -375,20 +383,6 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		 */
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
-			
-//			m1a = new MenuItem("新建科目");
-//			m1a.setShortcut(new MenuShortcut(KeyEvent.VK_N));
-//			m1b = new MenuItem("保存笔记");
-//			m1b.setShortcut(new MenuShortcut(KeyEvent.VK_S));
-//			m1c = new MenuItem("清空笔记");
-//			m1c.setShortcut(new MenuShortcut(KeyEvent.VK_D));
-//			m1d = new MenuItem("退出系统");
-//			m1d.setShortcut(new MenuShortcut(KeyEvent.VK_Q));
-//			m1e = new MenuItem("查询笔记");
-//			m1e.setShortcut(new MenuShortcut(KeyEvent.VK_U));
-//			m1f=new MenuItem("新建笔记");
-//			m1f.setShortcut(new MenuShortcut(KeyEvent.VK_B));
-			
 			jta.setText("");
 			if (e.getSource() == tree) {
 //				实例化树节点
@@ -399,26 +393,26 @@ public class DiaryFrame extends JFrame implements ActionListener {
 					if(node.getParent().toString().indexOf("日")>=0){
 						nodeType="内容节点";
 //						不能新建科目和笔记
-						m1a.setEnabled(false);m1f.setEnabled(false);m1b.setEnabled(true);
+						m1c.setEnabled(true);m1a.setEnabled(false);m1f.setEnabled(false);m1b.setEnabled(true);
 					}
 				}
 				if(node.toString().indexOf("日")>=0){
 					nodeType="日节点";
 //					不能新建科目、保存
-					m1a.setEnabled(false);m1f.setEnabled(true);m1b.setEnabled(false);
+					m1c.setEnabled(false);m1a.setEnabled(false);m1f.setEnabled(true);m1b.setEnabled(false);
 				}
 				if(node.toString().indexOf("月")>=0){
 					nodeType="月节点";
-					m1a.setEnabled(false);m1f.setEnabled(false);m1b.setEnabled(false);
+					m1c.setEnabled(false);m1a.setEnabled(false);m1f.setEnabled(false);m1b.setEnabled(false);
 				}
 				if(node.getParent()==node.getRoot()){
 					nodeType="科目节点";
-					m1a.setEnabled(false);m1f.setEnabled(false);m1b.setEnabled(false);
+					m1c.setEnabled(false);m1a.setEnabled(false);m1f.setEnabled(false);m1b.setEnabled(false);
 				}
 				if(node.isRoot()){
 					nodeType="根节点";
 //					不能新建笔记
-					m1a.setEnabled(true);m1f.setEnabled(false);m1b.setEnabled(false);
+					m1c.setEnabled(false);m1a.setEnabled(true);m1f.setEnabled(false);m1b.setEnabled(false);
 				}
 //				如果节点没有子节点
 				if (node.isLeaf()) {
@@ -429,10 +423,16 @@ public class DiaryFrame extends JFrame implements ActionListener {
 						String item=node.getParent().getParent().toString();
 						String month=node.getParent().toString();
 						String day= node.toString();
-						System.out.println("节点名称:"+item+month+day+",节点类型:"+nodeType);
+//						System.out.println("节点名称:"+item+month+day+",节点类型:"+nodeType);
 //						查询该月该日该科目笔记
 						ArrayList<DiaryDomain> detials=diaryDao.getDetialByAll(userID, item, month+day);
 						if(nodeType.equals("内容节点")){
+							tree.setEditable(true);
+//							添加离开点击监听事件
+							tree.startEditingAtPath(tree.getSelectionPath());
+							
+							tree.setInvokesStopCellEditing(true);
+							tree.getCellEditor().addCellEditorListener(new CellEditorAction());
 //							查询数据库结果并且赋值给JTextArea
 							currentDiaryID=((DetialNode) node).getCurrentDiaryID();
 							String jtaContent=diaryDao.getDiaryById(currentDiaryID).getContent();
@@ -440,7 +440,7 @@ public class DiaryFrame extends JFrame implements ActionListener {
 						}
 						if(detials.size()!=0 && nodeType.equals("日节点")){
 							for(int i=0;i<detials.size();i++){
-								String title=detials.get(i).getContent().substring(0,10);
+								String title=detials.get(i).getTitle();
 								DetialNode detialNode = new DetialNode(title);
 								detialNode.setCurrentDiaryID(detials.get(i).getId());
 								node.add(detialNode);
@@ -456,6 +456,17 @@ public class DiaryFrame extends JFrame implements ActionListener {
 		}
 
 	}
+//	标题命名监听类
+	private class CellEditorAction implements CellEditorListener{
+        public void editingCanceled(ChangeEvent e) {
+            System.out.println("==========编辑取消");
+        }
+        public void editingStopped(ChangeEvent e) {
+        	DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+        	System.out.println("完成编辑的节点名："+node.toString());
+            System.out.println("=======编辑结束");
+        }
+    }
 //格式设置类
 	class MyFont extends JFrame {
 		private static final long serialVersionUID = 1L;

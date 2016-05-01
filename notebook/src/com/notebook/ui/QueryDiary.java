@@ -26,6 +26,7 @@ public class QueryDiary extends JFrame implements ActionListener{
 	JRadioButton item=new JRadioButton("按科目");
 	JRadioButton date=new JRadioButton("按日期");
 	JRadioButton detial=new JRadioButton("按内容");
+	JRadioButton titleArgs=new JRadioButton("按标题");
 	JButton search=new JButton("搜索");
 	JButton back=new JButton("返回");
 	JLabel title=new JLabel("搜索结果：");
@@ -37,16 +38,18 @@ public class QueryDiary extends JFrame implements ActionListener{
 		grp.add(item);
 		grp.add(date);
 		grp.add(detial);
+		grp.add(titleArgs);
 		jtf.setBounds(40, 20, 340, 30);
 		item.setBounds(40, 60, 80, 30);
 		date.setBounds(140, 60, 80, 30);
 		detial.setBounds(240, 60, 80, 30);
+		titleArgs.setBounds(340, 60, 80, 30);
 		search.setBounds(390, 20, 60, 30);
 		title.setBounds(40, 100, 80, 30);
 		back.setBounds(460, 20, 60, 30);
 		search.addActionListener(this);
 		back.addActionListener(this);
-		add(jtf);add(item);add(date);add(detial);add(search);add(title);add(back);
+		add(jtf);add(item);add(date);add(detial);add(titleArgs);add(search);add(title);add(back);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 	}
 	@Override
@@ -70,18 +73,21 @@ public class QueryDiary extends JFrame implements ActionListener{
 		}
 		if(detial.isSelected()){
 			depend="detial";
+		}if(titleArgs.isSelected()){
+			depend="title";
 		}
 		DiaryDao diaryDao=new DiaryDao();
 		ArrayList<DiaryDomain> diarys=new ArrayList<DiaryDomain>();
 		diarys=diaryDao.getDiarysByArg(inputText, depend, userID);
 //		表格
-		final String[] colHeads = {"时间", "科目", "内容"};
-		final String[][] data=new String[diarys.size()][3];
+		final String[] colHeads = {"时间", "科目","标题", "内容"};
+		final String[][] data=new String[diarys.size()][4];
 //		将集合赋值到二维数组
 		for(int i=0;i<diarys.size();i++){
 			data[i][0]=diarys.get(i).getDate();
 			data[i][1]=diarys.get(i).getItem();
 			data[i][2]=diarys.get(i).getContent();
+			data[i][3]=diarys.get(i).getTitle();
 		}
 		JTable table = new JTable(data, colHeads);
 		int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;

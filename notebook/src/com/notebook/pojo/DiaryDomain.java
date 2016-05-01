@@ -2,6 +2,13 @@ package com.notebook.pojo;
 
 public class DiaryDomain {
 	private int id;
+	private String title;
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	public int getId() {
 		return id;
 	}
